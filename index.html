@@ -3,133 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Sweepstakes Bonuses</title>
+    <title>Sweepstakes Links</title>
     <style>
-        /* CSS: Makes it look good */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f9f9f9;
             color: #333;
             margin: 0;
             padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 30px;
-            text-align: center;
+            justify-content: center;
         }
         .container {
-            max-width: 600px;
+            max-width: 500px;
             width: 100%;
-        }
-        .link-card {
             background: white;
-            border-radius: 12px;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 1.2rem;
             text-align: center;
-            transition: transform 0.2s;
-        }
-        .link-card:hover {
-            transform: translateY(-3px);
-        }
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin: 0 0 10px 0;
+            margin-bottom: 20px;
             color: #2c3e50;
         }
-        .card-desc {
-            font-size: 0.95rem;
-            color: #666;
-            margin-bottom: 20px;
+        /* Compact List Styling */
+        .link-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
-        .btn {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 24px;
-            text-decoration: none;
-            border-radius: 8px;
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        .link-item:last-child {
+            border-bottom: none;
+        }
+        /* The Checkmark (Hidden by default) */
+        .checkmark {
+            width: 24px;
+            color: #27ae60;
             font-weight: bold;
-            width: 100%;
-            box-sizing: border-box;
-            transition: background 0.3s;
+            font-size: 1.2rem;
+            opacity: 0; /* Hidden */
+            transform: scale(0.5);
+            transition: all 0.3s ease;
+            text-align: center;
         }
-        .btn:hover {
-            background-color: #0056b3;
+        /* Show checkmark when visited class is added */
+        .link-item.visited .checkmark {
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* Link Text */
+        .link-text {
+            flex-grow: 1;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #2980b9;
+            text-decoration: none;
+            padding-left: 5px;
+        }
+        .link-item.visited .link-text {
+            color: #95a5a6; /* Gray out text when visited */
+            text-decoration: line-through; /* Optional: strikethrough */
         }
         .footer {
-            margin-top: 40px;
-            font-size: 0.8rem;
-            color: #888;
+            margin-top: 20px;
+            font-size: 0.75rem;
             text-align: center;
+            color: #aaa;
+        }
+        /* Reset Button */
+        .reset-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 8px 16px;
+            background: #eee;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .reset-btn:hover {
+            background: #ddd;
         }
     </style>
 </head>
 <body>
 
-    <h1>🎁 Exclusive Sweepstakes Bonuses</h1>
-
-    <div class="container" id="links-container">
-        <!-- Links will be inserted here by JavaScript -->
-    </div>
-
-    <div class="footer">
-        <p>18+ Only. Please Gamble Responsibly.</p>
+    <div class="container">
+        <h1>🎁 Bonus Links</h1>
+        <ul class="link-list" id="link-list">
+            <!-- Links injected here by JS -->
+        </ul>
+        
+        <button class="reset-btn" onclick="resetTracker()">Reset Checkmarks</button>
+        
+        <div class="footer">
+            18+ Only. Gamble Responsibly.
+        </div>
     </div>
 
     <script>
-        // JAVASCRIPT: Manages the links dynamically
-        // You can easily add/remove links here without touching the HTML above
-        
+        // --- CONFIGURATION: ADD YOUR 100 LINKS HERE ---
         const referrals = [
-            {
-                name: "Crown Coins Casino",
-                description: "Get 200,000 Gold Coins + 2 Free Sweeps Coins on signup.",
-                url: "https://crowncoinscasino.com/?your-referral-code-here"
-            },
-            {
-                name: "Stake.us",
-                description: "Claim 250,000 Gold Coins and 5% Rakeback instantly.",
-                url: "https://stake.us/?your-referral-code-here"
-            },
-            {
-                name: "Real Prize",
-                description: "New players get 100,000 Gold Coins + 2 Sweeps Coins.",
-                url: "https://realprize.com/?your-referral-code-here"
-            }
+            { name: "Crown Coins Casino", url: "https://crowncoinscasino.com/?ref=123" },
+            { name: "Stake.us", url: "https://stake.us/?ref=456" },
+            { name: "Real Prize", url: "https://realprize.com/?ref=789" },
+            { name: "Mega Bonanza", url: "https://megabonanza.com/?ref=101" },
+            { name: "Jackpota", url: "https://jackpota.com/?ref=102" },
+            // ... Add all 100 links here following the same format ...
+            { name: "Example Casino 100", url: "https://example.com/?ref=100" }
         ];
 
-        const container = document.getElementById('links-container');
+        const listContainer = document.getElementById('link-list');
 
-        // Loop through the list and create a card for each link
-        referrals.forEach(site => {
-            const card = document.createElement('div');
-            card.className = 'link-card';
+        // 1. Load visited links from LocalStorage
+        let visitedLinks = JSON.parse(localStorage.getItem('clickedLinks')) || [];
+
+        // 2. Generate the List
+        referrals.forEach((site, index) => {
+            const li = document.createElement('li');
+            li.className = 'link-item';
             
-            card.innerHTML = `
-                <h2 class="card-title">${site.name}</h2>
-                <p class="card-desc">${site.description}</p>
-                <a href="${site.url}" class="btn" target="_blank" rel="noopener noreferrer">Claim Bonus</a>
+            // Check if this URL was already visited
+            if (visitedLinks.includes(site.url)) {
+                li.classList.add('visited');
+            }
+
+            li.innerHTML = `
+                <span class="checkmark">✓</span>
+                <a href="${site.url}" class="link-text" target="_blank" rel="noopener noreferrer" onclick="markVisited('${site.url}', this)">
+                    ${site.name}
+                </a>
             `;
-            
-            container.appendChild(card);
+            listContainer.appendChild(li);
         });
 
-        // Optional: Simple Click Tracker (Logs to console)
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                console.log(`User clicked: ${btn.previousElementSibling.previousElementSibling.innerText}`);
-                // You could add Google Analytics or custom tracking here
-            });
-        });
+        // 3. Function to Mark Link as Visited
+        function markVisited(url, element) {
+            if (!visitedLinks.includes(url)) {
+                visitedLinks.push(url);
+                localStorage.setItem('clickedLinks', JSON.stringify(visitedLinks));
+                
+                // Visually update immediately without reload
+                const parentLi = element.parentElement;
+                parentLi.classList.add('visited');
+            }
+        }
+
+        // 4. Function to Reset (for testing or user preference)
+        function resetTracker() {
+            localStorage.removeItem('clickedLinks');
+            visitedLinks = [];
+            location.reload();
+        }
     </script>
 
 </body>
