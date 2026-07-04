@@ -27,7 +27,6 @@
             color: #2c3e50;
         }
         
-        /* Hint Box */
         .hint-box {
             background-color: #e8f4fd;
             border-left: 4px solid #3498db;
@@ -41,7 +40,6 @@
             gap: 10px;
         }
 
-        /* Filter Buttons */
         .filters {
             display: flex;
             gap: 10px;
@@ -70,7 +68,6 @@
             border-color: #2c3e50;
         }
 
-        /* Grid Layout */
         .link-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -87,15 +84,22 @@
             text-decoration: none;
             transition: all 0.2s ease;
             position: relative;
+            flex-direction: column; /* Stack text and badge */
+            align-items: flex-start;
         }
         .link-item:hover {
             border-color: #3498db;
             box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
             transform: translateY(-2px);
         }
-        /* Hide items that don't match filter */
         .link-item.hidden {
             display: none;
+        }
+
+        .link-header {
+            display: flex;
+            align-items: center;
+            width: 100%;
         }
 
         .checkmark {
@@ -120,6 +124,24 @@
             text-overflow: ellipsis;
             flex-grow: 1;
         }
+
+        /* NEW: Badge Style for Active Filter */
+        .filter-badge {
+            font-size: 0.7rem;
+            background-color: #e8f4fd;
+            color: #3498db;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+        /* Specific colors for specific tags if desired */
+        .badge-skrill { background-color: #e3f2fd; color: #1565c0; }
+        .badge-crypto { background-color: #f3e5f5; color: #7b1fa2; }
+        .badge-paypal { background-color: #e8f5e9; color: #2e7d32; }
 
         .link-item.visited {
             background-color: #f9fbfd;
@@ -161,6 +183,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -168,15 +191,22 @@
         
         <div class="hint-box">
             <span>💡</span>
-            <span><strong>Tip:</strong> Click a link to open it. A <strong>green checkmark (✓)</strong> will appear to track claimed bonuses. Use the buttons above to filter by payment method.</span>
+            <span><strong>Tip:</strong> Click a link to open it. A <strong>green checkmark (✓)</strong> will appear. Use filters to find specific payment methods.</span>
         </div>
 
-        <!-- Filter Buttons Container -->
+        <!-- FILTER BUTTONS -->
         <div class="filters" id="filters-container">
             <button class="filter-btn active" onclick="filterLinks('all', this)">All Casinos</button>
             <button class="filter-btn" onclick="filterLinks('skrill', this)">Skrill Accepted</button>
-            <!-- Add more filters here if needed, e.g.: -->
+            
+            <!-- HOW TO ADD A NEW FILTER BUTTON:
+                 1. Copy the line below.
+                 2. Replace 'crypto' with your new tag name (e.g., 'paypal').
+                 3. Replace 'Crypto Accepted' with the button text.
+                 4. Remove the <!-- and --> to activate it.
+            -->
             <!-- <button class="filter-btn" onclick="filterLinks('crypto', this)">Crypto Accepted</button> -->
+            <!-- <button class="filter-btn" onclick="filterLinks('paypal', this)">PayPal Accepted</button> -->
         </div>
 
         <div class="link-grid" id="link-grid">
@@ -192,7 +222,6 @@
 
     <script>
         // --- CONFIGURATION: ADD YOUR LINKS HERE ---
-        // Add 'tags' array to each item for filtering
         const referrals = [
             { name: "Crown Coins Casino", url: "https://crowncoinscasino.com/?utm_campaign=89b6afb6-e38b-4f55-9cb2-62dd166a6802&utm_source=friends", tags: ["skrill"] },
             { name: "Modo", url: "https://modo.us?referralCode=TGLTN9", tags: ["skrill"] },
@@ -271,15 +300,17 @@
 
         const gridContainer = document.getElementById('link-grid');
         let visitedLinks = JSON.parse(localStorage.getItem('clickedLinks')) || [];
+        let currentFilter = 'all';
 
         // Generate Grid
         function renderLinks(filterTag = 'all') {
-            gridContainer.innerHTML = ''; // Clear current grid
+            gridContainer.innerHTML = ''; 
+            currentFilter = filterTag;
             
             referrals.forEach(site => {
-                // Check if item matches filter
+                // Filter Logic
                 if (filterTag !== 'all' && !site.tags.includes(filterTag)) {
-                    return; // Skip this item if it doesn't match the filter
+                    return; 
                 }
 
                 const item = document.createElement('a');
@@ -294,21 +325,27 @@
 
                 item.onclick = () => markVisited(site.url, item);
 
+                // BADGE LOGIC: Only show badge if a filter is active AND the item has that tag
+                let badgeHtml = '';
+                if (filterTag !== 'all' && site.tags.includes(filterTag)) {
+                    // Creates a class like "badge-skrill" for styling
+                    badgeHtml = `<span class="filter-badge badge-${filterTag}">${filterTag}</span>`;
+                }
+
                 item.innerHTML = `
-                    <span class="checkmark">✓</span>
-                    <span class="link-text">${site.name}</span>
+                    <div class="link-header">
+                        <span class="checkmark">✓</span>
+                        <span class="link-text">${site.name}</span>
+                    </div>
+                    ${badgeHtml}
                 `;
                 gridContainer.appendChild(item);
             });
         }
 
-        // Filter Function
         function filterLinks(tag, btnElement) {
-            // Update active button style
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
-            
-            // Re-render grid with new filter
             renderLinks(tag);
         }
 
@@ -328,9 +365,7 @@
             }
         }
 
-        // Initial Render
         renderLinks();
-
     </script>
 </body>
 </html>   
