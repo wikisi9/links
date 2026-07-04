@@ -13,7 +13,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 900px; /* Wider to accommodate grid */
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             padding: 25px;
@@ -23,32 +23,58 @@
         h1 {
             font-size: 1.4rem;
             text-align: center;
-            margin: 0 0 10px 0;
+            margin: 0 0 15px 0;
             color: #2c3e50;
         }
-        /* Instructional Hint Box */
+        
+        /* Hint Box */
         .hint-box {
             background-color: #e8f4fd;
             border-left: 4px solid #3498db;
             color: #2c3e50;
             padding: 12px 15px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-size: 0.9rem;
             border-radius: 4px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .hint-icon {
-            font-size: 1.2rem;
+
+        /* Filter Buttons */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-        
-        /* GRID LAYOUT */
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: #555;
+        }
+        .filter-btn:hover {
+            background: #f0f0f0;
+            border-color: #bbb;
+        }
+        .filter-btn.active {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+        }
+
+        /* Grid Layout */
         .link-grid {
             display: grid;
-            /* Auto-fit columns: min 220px wide, fills space */
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 12px; /* Space between items */
+            gap: 12px;
         }
 
         .link-item {
@@ -61,15 +87,17 @@
             text-decoration: none;
             transition: all 0.2s ease;
             position: relative;
-            overflow: hidden;
         }
         .link-item:hover {
             border-color: #3498db;
             box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
             transform: translateY(-2px);
         }
+        /* Hide items that don't match filter */
+        .link-item.hidden {
+            display: none;
+        }
 
-        /* Checkmark Styling */
         .checkmark {
             color: #27ae60;
             font-weight: bold;
@@ -93,7 +121,6 @@
             flex-grow: 1;
         }
 
-        /* Visited State */
         .link-item.visited {
             background-color: #f9fbfd;
             border-color: #d1e7dd;
@@ -128,11 +155,9 @@
         }
         .reset-btn:hover { background: #ddd; }
 
-        /* Mobile Adjustment */
         @media (max-width: 500px) {
-            .link-grid {
-                grid-template-columns: 1fr; /* 1 column on very small screens */
-            }
+            .link-grid { grid-template-columns: 1fr; }
+            .filters { justify-content: flex-start; overflow-x: auto; padding-bottom: 5px; }
         }
     </style>
 </head>
@@ -141,11 +166,17 @@
     <div class="container">
         <h1>🎁 Bonus Links</h1>
         
-        <!-- Instructional Hint -->
         <div class="hint-box">
-            <span class="hint-icon">💡</span>
-            <span><strong>Tip:</strong> Click a link to open it. A <strong>green checkmark (✓)</strong> will appear here to help you track which links you've already clicked. 
-                You can reset it by clicking the Reset History button at the bottom.</span>
+            <span>💡</span>
+            <span><strong>Tip:</strong> Click a link to open it. A <strong>green checkmark (✓)</strong> will appear to track claimed bonuses. Use the buttons above to filter by payment method.</span>
+        </div>
+
+        <!-- Filter Buttons Container -->
+        <div class="filters" id="filters-container">
+            <button class="filter-btn active" onclick="filterLinks('all', this)">All Casinos</button>
+            <button class="filter-btn" onclick="filterLinks('skrill', this)">Skrill Accepted</button>
+            <!-- Add more filters here if needed, e.g.: -->
+            <!-- <button class="filter-btn" onclick="filterLinks('crypto', this)">Crypto Accepted</button> -->
         </div>
 
         <div class="link-grid" id="link-grid">
@@ -161,106 +192,125 @@
 
     <script>
         // --- CONFIGURATION: ADD YOUR LINKS HERE ---
+        // Add 'tags' array to each item for filtering
         const referrals = [
-{ name: "Crown Coins Casino", url: "https://crowncoinscasino.com/?utm_campaign=89b6afb6-e38b-4f55-9cb2-62dd166a6802&utm_source=friends" },
-{ name: "Modo", url: "https://modo.us?referralCode=TGLTN9" },
-{ name: "WowVegas", url: "https://www.wowvegas.com/?raf=12033562" },
-{ name: "Rolla", url: "https://www.rolla.com/?raf=1401901" },
-{ name: "Real Prize", url: "https://realprize.com/refer/2529465" },
-{ name: "LoneStar", url: "https://lonestarcasino.com/refer/2822296" },
-{ name: "SpinQuest", url: "spinquest.com/?u=LVIUYSM" },
-{ name: "MyPrize", url: "https://myprize.us/invite/player5472734222061" },
-{ name: "MegaBonanza", url: "https://www.megabonanza.com/?r=423235263" },
-{ name: "HelloMillions", url: "https://www.hellomillions.com/lp/raf?r=40689efe%2F2576968806" },
-{ name: "SpinBlitz", url: "https://www.spinblitz.com/lp/raf?r=fe48e021%2F2576976591" },
-{ name: "PlayFame", url: "https://www.playfame.com/lp/raf?r=ae0e1299%2F2576985414" },
-{ name: "McLuck", url: "https://www.mcluck.com/lp/raf?r=737ac078%2F2577236610" },
-{ name: "Legendz", url: "www.legendz.com/?referred_by_id=850141" },
-{ name: "Lucky Land Slots", url: "Luckylandslots.com" },
-{ name: "Lucky Land Casino", url: "Luckylandcasino.com" },
-{ name: "Ace Casino", url: "https://www.ace.com/?r=41f3c75f%2F88454142" },
-{ name: "Pulsz", url: "https://www.pulsz.com/?invited_by=tzqn87" },
-{ name: "PulszBingo", url: "https://www.pulszbingo.com/?invited_by=d8qw7j" },
-{ name: "Baba Casino", url: "https://play.babacasino.com/#/?referral_id=cd1d1a0b371c1fa32a87e97bf14e8357&inv_referral=true&fb_source=invite" },
-{ name: "American Luck", url: "https://americanluck.com/signup/4066e0ea-d07a-4dff-b181-527c38833c5f" },
-{ name: "Yay Casino", url: "https://www.yaycasino.com/signup/2db234db-3a7c-45e0-a45e-4d4ea81843b2" },
-{ name: "LuckParty", url: "https://luckparty.com/signup/1f92b0b0-a5cf-43a9-8175-4b68d10e0fb4" },
-{ name: "Zula Casino", url: "https://www.zulacasino.com/signup/b8244090-a2d0-4f89-afbf-9153cf7a12fc" },
-{ name: "Golden Hearts Games", url: "https://www.goldenheartsgames.com/referral/R1DT3XQBBH" },
-{ name: "SportZino", url: "https://sportzino.com/signup/4651d4fa-6cfe-4d09-81af-27d5aca097b7" },
-{ name: "Thrill Coins", url: "https://thrillcoins.com//?ref=r_svdw9" },
-{ name: "High 5 Casino", url: "https://high5casino.com/gc?openRegOnInit=1&adId=INV001%3Asvdw9" },
-{ name: "CapySpin", url: "https://www.capyspin.us/?cs=0n1Y" },
-{ name: "Shuffle", url: "https://shuffle.us?r=pqbIGdxDX1" },
-{ name: "Stake", url: "stake.us/?c=FpDJ6Rg5" },
-{ name: "Spree", url: "https://spree.com/?r=2118241" },
-{ name: "Jackpota", url: "https://www.jackpota.com/?r=431102265" },
-{ name: "Chanced", url: "https://chanced.com/c/4rjgko" },
-{ name: "Punt", url: "https://punt.com/c/08g5zk" },
-{ name: "Coin Wizard Games", url: "https://www.coinwizardgames.com/referral/HRF0LM8QMN" },
-{ name: "LuckyStake", url: "https://luckystake.com/?c=508388_rgppaVqL" },
-{ name: "BlitzMania", url: "https://blitzmania.com/r/63A1B1973F" },
-{ name: "LavishLuck", url: "https://invite.lavishluck.net/8dID/0cyelj9k?c=ANG7RYGR" },
-{ name: "Jackpot Go", url: "https://game.jackpotgo.com?invite_code=WWCYBU43" },
-{ name: "Lady Lucka", url: "https://www.ladylucka.com?referral_code=20d88493-caf8-485e-91b9-12f43f22cfb8" },
-{ name: "CoinFrenzy", url: "https://coinfrenzy.com/?referralcode=sjoerdvdw9" },
-{ name: "SweetSweeps", url: "https://sweetsweeps.com?referralCode=REFMTk2NTA3" },
-{ name: "FortuneWins", url: "https://fortunewins.com/signup/eadef914-be7d-4847-b363-be0c882aa508" },
-{ name: "SpeedSweeps", url: "https://speedsweeps.com/?ref=r_svdw9" },
-{ name: "BangCoins", url: "https://bangcoins.com/?ref=r_svdw9" },
-{ name: "DimeSweeps", url: "https://dimesweeps.com/?ref=r_svdw9" },
-{ name: "RichSweeps", url: "https://richsweeps.com/?ref=r_svdw9" },
-{ name: "Moozi", url: "https://moozi.com/signup?referral_code=3604889356" },
-{ name: "SpinPals", url: "https://www.spinpals.com?referralcode=e4dbb077-2c2b-4d0d-afaf-19bb08084fa3" },
-{ name: "Clubs Poker", url: "https://play.clubs.poker/?referralCode=266144" },
-{ name: "Betzy", url: "https://betzy.fun/sign-up?referral_code=MQshZLjn4S-2026" },
-{ name: "Crazy Coins Casino", url: "https://crazycoinscasino.com/?ref=r_crazyplaya" },
-{ name: "Dara Casino", url: "https://daracasino.com/signup?refferalCode=2bFNASR4Ro" },
-{ name: "WinEra", url: "https://winera.us?referralCode=1ckm4H#signup" },
-{ name: "TaoFortune", url: "https://taofortune.com/?invited_by=E466SR" },
-{ name: "NoLimitCoins", url: "https://nolimitcoins.com/?invited_by=3YYJMI" },
-{ name: "FunzCity", url: "http://funzcity.com/?invited_by=X0CDW9" },
-{ name: "Funrize", url: "https://funrize.com/?invited_by=BPS4CR" },
-{ name: "FortuneWheelz", url: "http://fortunewheelz.com/?invited_by=3OD4J9" },
-{ name: "StormRush", url: "https://stormrush.com/?invited_by=BINQFU" },
-{ name: "ScarletSands", url: "https://scarletsands.com/?invited_by=7X9RGE" },
-{ name: "SweepShark", url: "https://sweepshark.com/?invited_by=QO77LB" },
-{ name: "MrGoodWin", url: "https://mrgoodwin.com/?invited_by=FI8KXK" },
-{ name: "VegasWay", url: "https://vegasway.com/?invited_by=NNGD27" },
-{ name: "Playtana", url: "http://playtana.com/?invited_by=AOVB51" },
-{ name: "FireSevens", url: "https://firesevens.com/?invited_by=CZ9W5V" },
-{ name: "Sweepico", url: "http://sweepico.com/?invited_by=OCHVXJ" },
-{ name: "JackpotDaily", url: "http://www.jackpotdaily.com/?affiliateCode=referral&referralCode=yub0692" },
-{ name: "GrandPrize", url: "http://www.grandprize.com/?affiliateCode=gpvip&referralCode=swt9768" },
-{ name: "CardCrush", url: "https://www.cardcrush.com/lp/raf?r=b59939d8%2F46956453" },
-{ name: "Coins Back Casino", url: "https://www.coinsbackcasino.com/invite/1490467?utm_source=copy&utm_medium=referral&utm_campaign=member-referral" },
-{ name: "VictoryRush", url: "https://victoryrush.fun/?ref=r_svdw999" },
+            { name: "Crown Coins Casino", url: "https://crowncoinscasino.com/?utm_campaign=89b6afb6-e38b-4f55-9cb2-62dd166a6802&utm_source=friends", tags: ["skrill"] },
+            { name: "Modo", url: "https://modo.us?referralCode=TGLTN9", tags: ["skrill"] },
+            { name: "WowVegas", url: "https://www.wowvegas.com/?raf=12033562", tags: ["skrill"] },
+            { name: "Rolla", url: "https://www.rolla.com/?raf=1401901", tags: ["skrill"] },
+            { name: "Real Prize", url: "https://realprize.com/refer/2529465", tags: ["skrill"] },
+            { name: "LoneStar", url: "https://lonestarcasino.com/refer/2822296", tags: ["skrill"] },
+            { name: "SpinQuest", url: "spinquest.com/?u=LVIUYSM", tags: ["skrill"] },
+            { name: "MyPrize", url: "https://myprize.us/invite/player5472734222061", tags: ["skrill"] },
+            { name: "MegaBonanza", url: "https://www.megabonanza.com/?r=423235263", tags: ["skrill"] },
+            { name: "HelloMillions", url: "https://www.hellomillions.com/lp/raf?r=40689efe%2F2576968806", tags: ["skrill"] },
+            { name: "SpinBlitz", url: "https://www.spinblitz.com/lp/raf?r=fe48e021%2F2576976591", tags: ["skrill"] },
+            { name: "PlayFame", url: "https://www.playfame.com/lp/raf?r=ae0e1299%2F2576985414", tags: ["skrill"] },
+            { name: "McLuck", url: "https://www.mcluck.com/lp/raf?r=737ac078%2F2577236610", tags: ["skrill"] },
+            { name: "Legendz", url: "www.legendz.com/?referred_by_id=850141", tags: ["skrill"] },
+            { name: "Lucky Land Slots", url: "Luckylandslots.com", tags: ["skrill"] },
+            { name: "Lucky Land Casino", url: "Luckylandcasino.com", tags: ["skrill"] },
+            { name: "Ace Casino", url: "https://www.ace.com/?r=41f3c75f%2F88454142", tags: ["skrill"] },
+            { name: "Pulsz", url: "https://www.pulsz.com/?invited_by=tzqn87", tags: ["skrill"] },
+            { name: "PulszBingo", url: "https://www.pulszbingo.com/?invited_by=d8qw7j", tags: ["skrill"] },
+            { name: "Baba Casino", url: "https://play.babacasino.com/#/?referral_id=cd1d1a0b371c1fa32a87e97bf14e8357&inv_referral=true&fb_source=invite", tags: ["skrill"] },
+            { name: "American Luck", url: "https://americanluck.com/signup/4066e0ea-d07a-4dff-b181-527c38833c5f", tags: ["skrill"] },
+            { name: "Yay Casino", url: "https://www.yaycasino.com/signup/2db234db-3a7c-45e0-a45e-4d4ea81843b2", tags: ["skrill"] },
+            { name: "LuckParty", url: "https://luckparty.com/signup/1f92b0b0-a5cf-43a9-8175-4b68d10e0fb4", tags: ["skrill"] },
+            { name: "Zula Casino", url: "https://www.zulacasino.com/signup/b8244090-a2d0-4f89-afbf-9153cf7a12fc", tags: ["skrill"] },
+            { name: "Golden Hearts Games", url: "https://www.goldenheartsgames.com/referral/R1DT3XQBBH", tags: ["skrill"] },
+            { name: "SportZino", url: "https://sportzino.com/signup/4651d4fa-6cfe-4d09-81af-27d5aca097b7", tags: ["skrill"] },
+            { name: "Thrill Coins", url: "https://thrillcoins.com//?ref=r_svdw9", tags: ["skrill"] },
+            { name: "High 5 Casino", url: "https://high5casino.com/gc?openRegOnInit=1&adId=INV001%3Asvdw9", tags: ["skrill"] },
+            { name: "CapySpin", url: "https://www.capyspin.us/?cs=0n1Y", tags: ["skrill"] },
+            { name: "Shuffle", url: "https://shuffle.us?r=pqbIGdxDX1", tags: ["skrill"] },
+            { name: "Stake", url: "stake.us/?c=FpDJ6Rg5", tags: ["skrill"] },
+            { name: "Spree", url: "https://spree.com/?r=2118241", tags: ["skrill"] },
+            { name: "Jackpota", url: "https://www.jackpota.com/?r=431102265", tags: ["skrill"] },
+            { name: "Chanced", url: "https://chanced.com/c/4rjgko", tags: ["skrill"] },
+            { name: "Punt", url: "https://punt.com/c/08g5zk", tags: ["skrill"] },
+            { name: "Coin Wizard Games", url: "https://www.coinwizardgames.com/referral/HRF0LM8QMN", tags: ["skrill"] },
+            { name: "LuckyStake", url: "https://luckystake.com/?c=508388_rgppaVqL", tags: ["skrill"] },
+            { name: "BlitzMania", url: "https://blitzmania.com/r/63A1B1973F", tags: ["skrill"] },
+            { name: "LavishLuck", url: "https://invite.lavishluck.net/8dID/0cyelj9k?c=ANG7RYGR", tags: ["skrill"] },
+            { name: "Jackpot Go", url: "https://game.jackpotgo.com?invite_code=WWCYBU43", tags: ["skrill"] },
+            { name: "Lady Lucka", url: "https://www.ladylucka.com?referral_code=20d88493-caf8-485e-91b9-12f43f22cfb8", tags: ["skrill"] },
+            { name: "CoinFrenzy", url: "https://coinfrenzy.com/?referralcode=sjoerdvdw9", tags: ["skrill"] },
+            { name: "SweetSweeps", url: "https://sweetsweeps.com?referralCode=REFMTk2NTA3", tags: ["skrill"] },
+            { name: "FortuneWins", url: "https://fortunewins.com/signup/eadef914-be7d-4847-b363-be0c882aa508", tags: ["skrill"] },
+            { name: "SpeedSweeps", url: "https://speedsweeps.com/?ref=r_svdw9", tags: ["skrill"] },
+            { name: "BangCoins", url: "https://bangcoins.com/?ref=r_svdw9", tags: ["skrill"] },
+            { name: "DimeSweeps", url: "https://dimesweeps.com/?ref=r_svdw9", tags: ["skrill"] },
+            { name: "RichSweeps", url: "https://richsweeps.com/?ref=r_svdw9", tags: ["skrill"] },
+            { name: "Moozi", url: "https://moozi.com/signup?referral_code=3604889356", tags: ["skrill"] },
+            { name: "SpinPals", url: "https://www.spinpals.com?referralcode=e4dbb077-2c2b-4d0d-afaf-19bb08084fa3", tags: ["skrill"] },
+            { name: "Clubs Poker", url: "https://play.clubs.poker/?referralCode=266144", tags: ["skrill"] },
+            { name: "Betzy", url: "https://betzy.fun/sign-up?referral_code=MQshZLjn4S-2026", tags: ["skrill"] },
+            { name: "Crazy Coins Casino", url: "https://crazycoinscasino.com/?ref=r_crazyplaya", tags: ["skrill"] },
+            { name: "Dara Casino", url: "https://daracasino.com/signup?refferalCode=2bFNASR4Ro", tags: ["skrill"] },
+            { name: "WinEra", url: "https://winera.us?referralCode=1ckm4H#signup", tags: ["skrill"] },
+            { name: "TaoFortune", url: "https://taofortune.com/?invited_by=E466SR", tags: ["skrill"] },
+            { name: "NoLimitCoins", url: "https://nolimitcoins.com/?invited_by=3YYJMI", tags: ["skrill"] },
+            { name: "FunzCity", url: "http://funzcity.com/?invited_by=X0CDW9", tags: ["skrill"] },
+            { name: "Funrize", url: "https://funrize.com/?invited_by=BPS4CR", tags: ["skrill"] },
+            { name: "FortuneWheelz", url: "http://fortunewheelz.com/?invited_by=3OD4J9", tags: ["skrill"] },
+            { name: "StormRush", url: "https://stormrush.com/?invited_by=BINQFU", tags: ["skrill"] },
+            { name: "ScarletSands", url: "https://scarletsands.com/?invited_by=7X9RGE", tags: ["skrill"] },
+            { name: "SweepShark", url: "https://sweepshark.com/?invited_by=QO77LB", tags: ["skrill"] },
+            { name: "MrGoodWin", url: "https://mrgoodwin.com/?invited_by=FI8KXK", tags: ["skrill"] },
+            { name: "VegasWay", url: "https://vegasway.com/?invited_by=NNGD27", tags: ["skrill"] },
+            { name: "Playtana", url: "http://playtana.com/?invited_by=AOVB51", tags: ["skrill"] },
+            { name: "FireSevens", url: "https://firesevens.com/?invited_by=CZ9W5V", tags: ["skrill"] },
+            { name: "Sweepico", url: "http://sweepico.com/?invited_by=OCHVXJ", tags: ["skrill"] },
+            { name: "JackpotDaily", url: "http://www.jackpotdaily.com/?affiliateCode=referral&referralCode=yub0692", tags: ["skrill"] },
+            { name: "GrandPrize", url: "http://www.grandprize.com/?affiliateCode=gpvip&referralCode=swt9768", tags: ["skrill"] },
+            { name: "CardCrush", url: "https://www.cardcrush.com/lp/raf?r=b59939d8%2F46956453", tags: ["skrill"] },
+            { name: "Coins Back Casino", url: "https://www.coinsbackcasino.com/invite/1490467?utm_source=copy&utm_medium=referral&utm_campaign=member-referral", tags: ["skrill"] },
+            { name: "VictoryRush", url: "https://victoryrush.fun/?ref=r_svdw999", tags: ["skrill"] },
         ];
 
         const gridContainer = document.getElementById('link-grid');
         let visitedLinks = JSON.parse(localStorage.getItem('clickedLinks')) || [];
 
         // Generate Grid
-        referrals.forEach(site => {
-            const item = document.createElement('a');
-            item.href = site.url;
-            item.target = "_blank";
-            item.rel = "noopener noreferrer";
-            item.className = 'link-item';
+        function renderLinks(filterTag = 'all') {
+            gridContainer.innerHTML = ''; // Clear current grid
             
-            if (visitedLinks.includes(site.url)) {
-                item.classList.add('visited');
-            }
+            referrals.forEach(site => {
+                // Check if item matches filter
+                if (filterTag !== 'all' && !site.tags.includes(filterTag)) {
+                    return; // Skip this item if it doesn't match the filter
+                }
 
-            // Click event to mark visited
-            item.onclick = () => markVisited(site.url, item);
+                const item = document.createElement('a');
+                item.href = site.url;
+                item.target = "_blank";
+                item.rel = "noopener noreferrer";
+                item.className = 'link-item';
+                
+                if (visitedLinks.includes(site.url)) {
+                    item.classList.add('visited');
+                }
 
-            item.innerHTML = `
-                <span class="checkmark">✓</span>
-                <span class="link-text">${site.name}</span>
-            `;
-            gridContainer.appendChild(item);
-        });
+                item.onclick = () => markVisited(site.url, item);
+
+                item.innerHTML = `
+                    <span class="checkmark">✓</span>
+                    <span class="link-text">${site.name}</span>
+                `;
+                gridContainer.appendChild(item);
+            });
+        }
+
+        // Filter Function
+        function filterLinks(tag, btnElement) {
+            // Update active button style
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            // Re-render grid with new filter
+            renderLinks(tag);
+        }
 
         function markVisited(url, element) {
             if (!visitedLinks.includes(url)) {
@@ -277,7 +327,10 @@
                 location.reload();
             }
         }
-    </script>
 
+        // Initial Render
+        renderLinks();
+
+    </script>
 </body>
 </html>   
