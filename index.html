@@ -185,6 +185,17 @@
             font-size: 0.8rem;
             color: #555;
         }
+        .page-description {
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+            margin-top: -10px; /* Pulls it slightly closer to the title */
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }   
         .reset-btn:hover { background: #ddd; }
 
         @media (max-width: 500px) {
@@ -197,7 +208,11 @@
 <body>
 
     <div class="container">
-        <h1>🎁 Casino Links</h1>
+        <h1>🎁 Make Money With Sweeps</h1>
+
+        <p class="page-description">
+        
+        </p>
         
         <div class="hint-box">
             <span>💡</span>
@@ -206,8 +221,8 @@
 
         <div class="hint-box">
             <span>💡</span>
-            <span><strong>Tip:</strong> When you click a link, a <strong>green checkmark (✓)</strong> will appear to help you track which links you've already clicked. 
-                You can reset it by clicking the Reset History button at the bottom.</span>
+            <span><strong>Tip:</strong> When you click a link, a <strong>green checkmark (✓)<strong> will appear to help you track which links you've already clicked. 
+                You can reset it by clicking the <strong>Reset History<strong> button at the bottom.</span>
         </div>
 
         <div class="filters" id="filters-container">
@@ -230,10 +245,11 @@
         const filterConfig = [
             { id: 'all', label: 'All Casinos', color: '#95a5a6' }, // Gray for "All"
             { id: 'skrill', label: 'Accepts Skrill', color: '#3498db' }, // Blue
+            /*
             { id: 'crypto', label: 'Accepts Crypto (BTC, ETH, LTC)', color: '#9b59b6' }, // Purple
             { id: 'paypal', label: 'Accepts PayPal', color: '#2ecc71' }, // Green
             { id: 'vip', label: 'VIP Program Available', color: '#e67e22' } // Orange
-            /* 
+            
                HOW TO ADD A NEW FILTER:
                1. Add a new line above: { id: 'unique_id', label: 'Long Display Name', color: '#hexcode' },
                2. Add the 'unique_id' to the 'tags' array of the casinos below.
@@ -345,13 +361,6 @@
                 `;
                 filtersContainer.appendChild(btn);
             });
-
-            // Add A-Z Button
-            const sortBtn = document.createElement('button');
-            sortBtn.className = 'filter-btn';
-            sortBtn.innerHTML = `🔤 A-Z Sort`;
-            sortBtn.onclick = () => toggleSort(sortBtn);
-            filtersContainer.appendChild(sortBtn);
         }
 
         // 2. Apply Filter
@@ -386,42 +395,12 @@
             renderGrid();
         }
 
-        // 3. Toggle Sort
-        function toggleSort(btnElement) {
-            currentSortOrder = currentSortOrder === 'alpha' ? 'default' : 'alpha';
-            
-            // Visual toggle for sort button
-            const allBtns = filtersContainer.querySelectorAll('.filter-btn');
-            allBtns.forEach(b => {
-                if(b.innerText.includes('A-Z')) {
-                    if(currentSortOrder === 'alpha') {
-                        b.style.backgroundColor = '#2c3e50';
-                        b.style.color = 'white';
-                        b.style.borderColor = '#2c3e50';
-                    } else {
-                        b.style.backgroundColor = 'white';
-                        b.style.color = '#555';
-                        b.style.borderColor = '#ddd';
-                    }
-                } else {
-                    // Reset others if they were accidentally styled (optional)
-                }
-            });
-
-            renderGrid();
-        }
-
         // 4. Render Grid
         function renderGrid() {
             gridContainer.innerHTML = '';
 
             // Copy array to avoid mutating original
             let displayList = [...referrals];
-
-            // Sort Alphabetically if needed
-            if (currentSortOrder === 'alpha') {
-                displayList.sort((a, b) => a.name.localeCompare(b.name));
-            }
 
             displayList.forEach(site => {
                 const item = document.createElement('a');
