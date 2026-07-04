@@ -7,91 +7,132 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f4f6f8;
             color: #333;
             margin: 0;
             padding: 20px;
-            display: flex;
-            justify-content: center;
         }
         .container {
-            max-width: 500px;
-            width: 100%;
+            max-width: 900px; /* Wider to accommodate grid */
+            margin: 0 auto;
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
         h1 {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             text-align: center;
-            margin-bottom: 20px;
+            margin: 0 0 10px 0;
             color: #2c3e50;
         }
-        /* Compact List Styling */
-        .link-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        /* Instructional Hint Box */
+        .hint-box {
+            background-color: #e8f4fd;
+            border-left: 4px solid #3498db;
+            color: #2c3e50;
+            padding: 12px 15px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+        .hint-icon {
+            font-size: 1.2rem;
+        }
+        
+        /* GRID LAYOUT */
+        .link-grid {
+            display: grid;
+            /* Auto-fit columns: min 220px wide, fills space */
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px; /* Space between items */
+        }
+
         .link-item {
             display: flex;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            transition: background 0.2s;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .link-item:last-child {
-            border-bottom: none;
+        .link-item:hover {
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+            transform: translateY(-2px);
         }
-        /* The Checkmark (Hidden by default) */
+
+        /* Checkmark Styling */
         .checkmark {
-            width: 24px;
             color: #27ae60;
             font-weight: bold;
-            font-size: 1.2rem;
-            opacity: 0; /* Hidden */
-            transform: scale(0.5);
-            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            margin-right: 10px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            flex-shrink: 0;
+            width: 20px;
             text-align: center;
         }
-        /* Show checkmark when visited class is added */
+        
+        .link-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2980b9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-grow: 1;
+        }
+
+        /* Visited State */
+        .link-item.visited {
+            background-color: #f9fbfd;
+            border-color: #d1e7dd;
+        }
         .link-item.visited .checkmark {
             opacity: 1;
             transform: scale(1);
         }
-        /* Link Text */
-        .link-text {
-            flex-grow: 1;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #2980b9;
-            text-decoration: none;
-            padding-left: 5px;
-        }
         .link-item.visited .link-text {
-            color: #95a5a6; /* Gray out text when visited */
-            text-decoration: line-through; /* Optional: strikethrough */
+            color: #95a5a6;
+            text-decoration: line-through;
         }
+
         .footer {
-            margin-top: 20px;
-            font-size: 0.75rem;
+            margin-top: 30px;
             text-align: center;
+            font-size: 0.8rem;
             color: #aaa;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
         }
-        /* Reset Button */
         .reset-btn {
-            display: block;
-            margin: 20px auto 0;
-            padding: 8px 16px;
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 12px;
             background: #eee;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.8rem;
+            color: #555;
         }
-        .reset-btn:hover {
-            background: #ddd;
+        .reset-btn:hover { background: #ddd; }
+
+        /* Mobile Adjustment */
+        @media (max-width: 500px) {
+            .link-grid {
+                grid-template-columns: 1fr; /* 1 column on very small screens */
+            }
         }
     </style>
 </head>
@@ -99,70 +140,81 @@
 
     <div class="container">
         <h1>🎁 Bonus Links</h1>
-        <ul class="link-list" id="link-list">
-            <!-- Links injected here by JS -->
-        </ul>
         
-        <button class="reset-btn" onclick="resetTracker()">Reset Checkmarks</button>
+        <!-- Instructional Hint -->
+        <div class="hint-box">
+            <span class="hint-icon">💡</span>
+            <span><strong>Tip:</strong> Click a link to open it. A <strong>green checkmark (✓)</strong> will appear here to help you track which bonuses you've already claimed.</span>
+        </div>
+
+        <div class="link-grid" id="link-grid">
+            <!-- Links injected here -->
+        </div>
         
         <div class="footer">
             18+ Only. Gamble Responsibly.
+            <br>
+            <button class="reset-btn" onclick="resetTracker()">Reset History</button>
         </div>
     </div>
 
     <script>
-        // --- CONFIGURATION: ADD YOUR 100 LINKS HERE ---
+        // --- CONFIGURATION: ADD YOUR LINKS HERE ---
         const referrals = [
             { name: "Crown Coins Casino", url: "https://crowncoinscasino.com/?ref=123" },
             { name: "Stake.us", url: "https://stake.us/?ref=456" },
             { name: "Real Prize", url: "https://realprize.com/?ref=789" },
             { name: "Mega Bonanza", url: "https://megabonanza.com/?ref=101" },
             { name: "Jackpota", url: "https://jackpota.com/?ref=102" },
-            // ... Add all 100 links here following the same format ...
-            { name: "Example Casino 100", url: "https://example.com/?ref=100" }
+            { name: "High5 Casino", url: "https://high5casino.com/?ref=103" },
+            { name: "Thrillzz", url: "https://thrillzz.com/?ref=104" },
+            { name: "Sportzino", url: "https://sportzino.com/?ref=105" },
+            { name: "Spree", url: "https://spree.com/?ref=106" },
+            { name: "Ding Ding Ding", url: "https://dingdingding.com/?ref=107" },
+            { name: "Fortune Coins", url: "https://fortunecoins.com/?ref=108" },
+            { name: "Golden Hearts", url: "https://goldenhearts.com/?ref=109" },
+            // ... Add the rest of your 100 links here ...
         ];
 
-        const listContainer = document.getElementById('link-list');
-
-        // 1. Load visited links from LocalStorage
+        const gridContainer = document.getElementById('link-grid');
         let visitedLinks = JSON.parse(localStorage.getItem('clickedLinks')) || [];
 
-        // 2. Generate the List
-        referrals.forEach((site, index) => {
-            const li = document.createElement('li');
-            li.className = 'link-item';
+        // Generate Grid
+        referrals.forEach(site => {
+            const item = document.createElement('a');
+            item.href = site.url;
+            item.target = "_blank";
+            item.rel = "noopener noreferrer";
+            item.className = 'link-item';
             
-            // Check if this URL was already visited
             if (visitedLinks.includes(site.url)) {
-                li.classList.add('visited');
+                item.classList.add('visited');
             }
 
-            li.innerHTML = `
+            // Click event to mark visited
+            item.onclick = () => markVisited(site.url, item);
+
+            item.innerHTML = `
                 <span class="checkmark">✓</span>
-                <a href="${site.url}" class="link-text" target="_blank" rel="noopener noreferrer" onclick="markVisited('${site.url}', this)">
-                    ${site.name}
-                </a>
+                <span class="link-text">${site.name}</span>
             `;
-            listContainer.appendChild(li);
+            gridContainer.appendChild(item);
         });
 
-        // 3. Function to Mark Link as Visited
         function markVisited(url, element) {
             if (!visitedLinks.includes(url)) {
                 visitedLinks.push(url);
                 localStorage.setItem('clickedLinks', JSON.stringify(visitedLinks));
-                
-                // Visually update immediately without reload
-                const parentLi = element.parentElement;
-                parentLi.classList.add('visited');
+                element.classList.add('visited');
             }
         }
 
-        // 4. Function to Reset (for testing or user preference)
         function resetTracker() {
-            localStorage.removeItem('clickedLinks');
-            visitedLinks = [];
-            location.reload();
+            if(confirm("Clear all checkmarks?")) {
+                localStorage.removeItem('clickedLinks');
+                visitedLinks = [];
+                location.reload();
+            }
         }
     </script>
 
