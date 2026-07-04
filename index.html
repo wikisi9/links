@@ -1,1 +1,136 @@
-hi there
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Sweepstakes Bonuses</title>
+    <style>
+        /* CSS: Makes it look good */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+        .link-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .link-card:hover {
+            transform: translateY(-3px);
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+        .card-desc {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: #888;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎁 Exclusive Sweepstakes Bonuses</h1>
+
+    <div class="container" id="links-container">
+        <!-- Links will be inserted here by JavaScript -->
+    </div>
+
+    <div class="footer">
+        <p>18+ Only. Please Gamble Responsibly.</p>
+    </div>
+
+    <script>
+        // JAVASCRIPT: Manages the links dynamically
+        // You can easily add/remove links here without touching the HTML above
+        
+        const referrals = [
+            {
+                name: "Crown Coins Casino",
+                description: "Get 200,000 Gold Coins + 2 Free Sweeps Coins on signup.",
+                url: "https://crowncoinscasino.com/?your-referral-code-here"
+            },
+            {
+                name: "Stake.us",
+                description: "Claim 250,000 Gold Coins and 5% Rakeback instantly.",
+                url: "https://stake.us/?your-referral-code-here"
+            },
+            {
+                name: "Real Prize",
+                description: "New players get 100,000 Gold Coins + 2 Sweeps Coins.",
+                url: "https://realprize.com/?your-referral-code-here"
+            }
+        ];
+
+        const container = document.getElementById('links-container');
+
+        // Loop through the list and create a card for each link
+        referrals.forEach(site => {
+            const card = document.createElement('div');
+            card.className = 'link-card';
+            
+            card.innerHTML = `
+                <h2 class="card-title">${site.name}</h2>
+                <p class="card-desc">${site.description}</p>
+                <a href="${site.url}" class="btn" target="_blank" rel="noopener noreferrer">Claim Bonus</a>
+            `;
+            
+            container.appendChild(card);
+        });
+
+        // Optional: Simple Click Tracker (Logs to console)
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                console.log(`User clicked: ${btn.previousElementSibling.previousElementSibling.innerText}`);
+                // You could add Google Analytics or custom tracking here
+            });
+        });
+    </script>
+
+</body>
+</html>   
